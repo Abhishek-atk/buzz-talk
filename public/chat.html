@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Buzz Talk</title>
+</head>
+
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <h1><i class="fas fa-bolt"></i> <span class="logo">Buzz Talk</span></h1>
+            <a id="leave-btn" class="btn" href="index.html">Leave Room</a>
+        </header>
+        <main class="chat-main">
+            <div class="chat-sidebar">
+                <h3><i class="fas fa-comments"></i> Room Name</h3>
+                <h2 id="room-name"></h2>
+                <h3><i class="fas fa-users"></i> Users</h3>
+                <ul id="users"></ul>
+            </div>
+            <div class="chat-messages"></div>
+        </main>
+        <div class="chat-form-container">
+            <form id="chat-form">
+
+                <div class="form-control">
+                    <input type="value" required="" id="msg" required autocomplete="off">
+                    <button class="btn"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+        integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.11.1/qs.min.js"
+        integrity="sha512-5Zv/hNtOKSkeScnIYOqGjng82gQSHsCoyqq9TgrJLgYa032cUYWH4kF1ayS8Gz1Jfge7e8MaBF6AeEvoQ92v8w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: monospace;
+        font-size: 16px;
+        background: #171717;
+        margin: 20px;
+        scroll-behavior: smooth;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+
+
+
+    /* =============== COMMON MESSAGE STYLE START=========================== */
+    .chat-messages {
+        padding: 30px;
+        height: 400px;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .time {
+        color: #777;
+        text-align: right;
+        font-size: .8rem;
+    }
+
+    /* =============== COMMON MESSAGE END=========================== */
+
+
+    /* ===============BOT MESSAGE START=========================== */
+
+    .chat-messages .bot-notification {
+        align-self: center;
+        color: white;
+
+
+    }
+
+    .chat-messages .bot-notification .bot-message {
+        padding: 10px;
+        margin-bottom: 15px;
+        display: inline-block;
+        border-bottom: 2px solid white;
+
+    }
+
+    .chat-messages .bot-message .bot-name {
+        font-size: 15px;
+        font-weight: bold;
+        color: #7079f0;
+        opacity: 0.7;
+        margin-bottom: 7px;
+        text-align: left;
+    }
+
+    .chat-messages .bot-message .bot-chat {
+        padding: 5px;
+
+    }
+
+
+
+    /* ===============BOT MESSAGE END=========================== */
+
+
+    /* =============OTHER USER CHAT START================================= */
+
+
+
+    .chat-messages .others-chat .message {
+        padding: 10px;
+        margin-bottom: 15px;
+        overflow-wrap: break-word;
+        max-width: 60ch;
+        min-width: 15ch;
+        float: left;
+        border-bottom: 2px solid white;
+        color: white;
+
+    }
+
+    .chat-messages .message .meta {
+        font-size: 15px;
+        font-weight: bold;
+        color: #8ffcff;
+        opacity: 0.7;
+        margin-bottom: 7px;
+
+    }
+
+    .chat-messages .message .meta span {
+        color: red;
+    }
+
+    /* =============OTHER USER CHAT END================================= */
+
+
+    /* =============MY USER CHAT START================================= */
+
+
+    .chat-messages .my-chat .message {
+        padding: 10px;
+        margin-bottom: 15px;
+        overflow-wrap: break-word;
+        max-width: 60ch;
+        min-width: 15ch;
+        color: white;
+        border-bottom: 2px solid white;
+        float: right;
+
+
+    }
+
+    .chat-messages .message .meta span {
+        color: #777;
+    }
+
+    /* =============MY USER CHAT END================================= */
+
+
+
+
+
+
+
+
+
+    .fa-bolt {
+        color: #7079f0;
+        cursor: pointer;
+    }
+
+    .logo {
+        color: white;
+        cursor: pointer;
+    }
+
+    .logo:hover {
+        color: #7079f0;
+    }
+
+    .btn {
+        font-family: monospace;
+        background: transparent;
+        color: white;
+        font-size: 18px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        color: #7079f0;
+    }
+
+    /* Chat Page */
+
+    .chat-container {
+        max-width: 1100px;
+        background: transparent;
+        margin: 30px auto;
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background: transparent;
+        color: #fff;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .chat-main {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
+    .chat-sidebar {
+        background: transparent;
+        color: #fff;
+        padding: 20px 20px 60px;
+        overflow-y: scroll;
+    }
+
+    .chat-sidebar h2 {
+        font-size: 20px;
+        background: transparent;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .chat-sidebar h3 {
+        margin-bottom: 15px;
+    }
+
+    .chat-sidebar ul li {
+        padding: 10px 0;
+    }
+
+
+    /* here is  div for input feild */
+    .chat-form-container {
+        /* padding: 20px 30px; */
+        background-color: transparent;
+    }
+
+    .chat-form-container form {
+        display: flex;
+        margin-left: 25%;
+    }
+
+    .chat-form-container input[type='text'] {
+        font-size: 16px;
+        padding: 5px;
+        height: 40px;
+        flex: 1;
+    }
+
+    @media (max-width: 700px) {
+        .chat-main {
+            display: block;
+        }
+
+        .chat-sidebar {
+            display: none;
+        }
+    }
+
+    /* input  start*/
+
+
+    .form-control {
+        position: relative;
+        margin: 20px 0 40px;
+        width: 100%;
+        display: flex;
+    }
+
+    .form-control input {
+        background-color: transparent;
+        border: 0;
+        border-bottom: 2px #fff solid;
+        display: block;
+        width: 100%;
+        padding: 15px 0;
+        font-size: 18px;
+        color: #fff;
+        font-family: monospace;
+    }
+
+    .form-control input:focus,
+    .form-control input:valid {
+        outline: 0;
+        border-bottom-color: #7079f0;
+    }
+
+    .form-control label {
+        position: absolute;
+        top: 15px;
+        left: 0;
+        pointer-events: none;
+    }
+
+    /* input end */
+
+
+    /* Customize scrollbar start */
+
+    ::-webkit-scrollbar {
+        width: 2px;
+        /* Width of scrollbar */
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+        /* Background color of track */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #7079f0;
+        /* Color of thumb */
+        border-radius: 10px;
+        /* Rounded corners of thumb */
+    }
+
+    /* Customize scrollbar End*/
+
+.bot-animation {
+  opacity: 0;
+  animation: bot-animation 1s ease-in-out forwards;
+}
+
+@keyframes bot-animation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+.my-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: my-animation 1s ease-in-out forwards;
+}
+
+@keyframes my-animation {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.others-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: others-animation 1s ease-in-out forwards;
+}
+
+@keyframes others-animation {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.new-user-animation{
+    opacity: 0;
+  transform: translateX(-20px);
+  animation: new-user-animation 1s ease-in-out forwards;
+
+}
+@keyframes new-user-animation {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+
+
+
+</style>
+
+</html>
