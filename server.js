@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const app = express();
+const cors = require("cors")
+
 const server = http.createServer(app)
 const formatMessage = require('./utils/formatMessage')
 const { userJoin, getcurrentUser, userleave, getroomUsers } = require('./utils/users')
@@ -12,6 +14,7 @@ require('dotenv').config()
 const PORT = process.env.PORT
 //set static folder 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(cors())
 
 // run when client connect to server
 io.on('connection', socket => {
