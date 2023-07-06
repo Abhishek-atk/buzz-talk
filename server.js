@@ -41,6 +41,18 @@ io.on('connection', socket => {
     
     })
 
+    // Listen for 'typing' event
+    socket.on('typing', () => {
+        const user = getcurrentUser(socket.id);
+        socket.to(user.room).emit('userTyping', user.username);
+    });
+
+    // Listen for 'stopTyping' event
+    socket.on('stopTyping', () => {
+        const user = getcurrentUser(socket.id);
+        socket.to(user.room).emit('userStoppedTyping', user.username);
+    });
+
 
     //boradcast when a client disconnected to server
     socket.on('disconnect', () => {

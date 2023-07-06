@@ -2,7 +2,8 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
-
+const inp = document.getElementById("msg")
+const typingIndicator = document.getElementById("typing-indicators");
 // Get user Name and room from url;
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true
@@ -19,14 +20,13 @@ socket.on("roomUsers", ({ room, users }) => {
 })
 
 //send Bot message to client to server
-
 socket.on("botMessage", message => {
   outputBotMessage(message)
   //Scroll Down 
   chatMessages.scrollTop = chatMessages.scrollHeight;
 })
 
-//send user message to client to server
+//send user message (client) to server
 
 socket.on('message', message => {
 if (message.id === socket.id) {
@@ -39,22 +39,40 @@ if (message.id === socket.id) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 })
 
-// message submit
+inp.addEventListener('keydown', () => {
+  socket.emit('typing');
+});
+inp.addEventListener('keyup', () => {
+  socket.emit('stopTyping');
+});
 
+// message submit
 chatForm.addEventListener('submit', (e) => {
   e.preventDefault();
-
   const msg = e.target.elements.msg.value
   socket.emit('chatMessage', msg)
+  socket.emit('stopTyping');
   e.target.elements.msg.value = ''
   e.target.elements.msg.focus()
 })
+
+
+// Listen for 'userTyping' event and display the typing indicator
+socket.on('userTyping', (username) => {
+  typingIndicator.innerHTML = `${username} is typing...`
+});
+
+// Listen for 'userStoppedTyping' event and remove the typing indicator
+socket.on('userStoppedTyping', (username) => {
+  typingIndicator.innerHTML = ""
+});
+
+
 
 // Output Bot message to Dom
 const outputBotMessage = (message) => {
   const div = document.createElement('div');
   div.classList.add('bot-notification');
-
   div.innerHTML = `<div class="bot-message bot-animation">
   <p class="bot-name">${message.userName}</p>
   <p class="bot-chat">${message.chat}</p>
