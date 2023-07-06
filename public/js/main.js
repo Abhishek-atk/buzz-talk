@@ -39,13 +39,6 @@ if (message.id === socket.id) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 })
 
-inp.addEventListener('keydown', () => {
-  socket.emit('typing');
-});
-inp.addEventListener('keyup', () => {
-  socket.emit('stopTyping');
-});
-
 // message submit
 chatForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -55,6 +48,26 @@ chatForm.addEventListener('submit', (e) => {
   e.target.elements.msg.value = ''
   e.target.elements.msg.focus()
 })
+const debounce = (func, wait) => {
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
+};
+const debouncedOnKeyup = debounce(() => {
+  typingIndicator.innerHTML = "";
+  // Emit stop typing event
+  socket.emit("stopTyping");
+}, 1500);
+
+inp.addEventListener('keydown', () => {
+  socket.emit('typing');
+});
+inp.addEventListener('keyup', () => {
+  // socket.emit('stopTyping');
+  debouncedOnKeyup()
+});
 
 
 // Listen for 'userTyping' event and display the typing indicator
@@ -66,8 +79,6 @@ socket.on('userTyping', (username) => {
 socket.on('userStoppedTyping', (username) => {
   typingIndicator.innerHTML = ""
 });
-
-
 
 // Output Bot message to Dom
 const outputBotMessage = (message) => {
