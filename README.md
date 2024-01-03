@@ -3,6 +3,11 @@
 ## Description
 BuzzTalk is a user-friendly chat application developed using Node.js, Express.js, and Socket.io. It provides a visually appealing and responsive interface for a seamless user experience. The application includes room creation and joining capabilities to facilitate real-time conversations. Additionally, real-time typing indicators have been implemented to enhance the chat communication flow, showing when users are actively typing.
 
+## Live
+Live Link🔗: https://buzztalk-5kdt.onrender.com
+
+Video Link🔗: https://www.linkedin.com/feed/update/urn:li:activity:7116395581173895169/
+
 ## Features
 - **Real-Time Chat:**
   - Facilitate real-time conversations with room creation and joining capabilities.
