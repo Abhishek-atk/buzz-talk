@@ -26,12 +26,12 @@ BuzzTalk is a user-friendly chat application developed using Node.js, Express.js
 
 ## Screenshots
 ![Screenshot 1](/public/image/buzztalk-login.png)
-*Join fom for entering the room*
+*Joining form for entering the room*
 
-![Screenshot 2](/public/image/buzztalk-chat-1.png)
+![Screenshot 2](/public/image/buzztalk-chat-2.png)
 *Enter the chat-room and chat*
 
-![Screenshot 3](/public/image//buzztalk-chat-2.png)
+![Screenshot 3](/public/image//buzztalk-chat-1.png)
 *Left the chat-room*
 
 
