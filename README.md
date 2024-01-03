@@ -34,7 +34,9 @@ BuzzTalk is a user-friendly chat application developed using Node.js, Express.js
 
 
 ## Live
-Link🔗: https://buzztalk-5kdt.onrender.com
+Live Link🔗: https://buzztalk-5kdt.onrender.com
+
+Video Link🔗: https://www.linkedin.com/feed/update/urn:li:activity:7116395581173895169/
 
 
 ## Installation
