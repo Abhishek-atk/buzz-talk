@@ -1,5 +1,3 @@
-Live Link🔗: https://buzztalk-5kdt.onrender.com
-
 # BuzzTalk | Chat Application | Node.js
 
 ## Description
@@ -29,7 +27,7 @@ BuzzTalk is a user-friendly chat application developed using Node.js, Express.js
 *Joining form for entering the room*
 
 ![Screenshot 2](/public/image/buzztalk-chat-2.png)
-*Enter the chat-room and chat*
+*Entered the chat-room and chat*
 
 ![Screenshot 3](/public/image//buzztalk-chat-1.png)
 *Left the chat-room*
